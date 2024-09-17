@@ -20,6 +20,7 @@ public class LocalProcessor {
     private String processorVersion;
     private int valueOfChip;
     private Scanner informationScanner;
+    private StringBuilder stringBuilder;
     private static final Logger logger = Logger.getLogger(LocalProcessor.class.getName());
 
     public LocalProcessor(String processorName, long period, String processorVersion, int valueOfChip) {
@@ -35,20 +36,22 @@ public class LocalProcessor {
     @ListIteratorAnnotation
     public void iterateList(List<String> list) {
         if (list == null) {
-            logger.warning("Список для итерации равен null.");
-            System.out.println("Список для итерации равен null.");
+            String warningString = "Список для итерации равен null.";
+            logger.warning(warningString);
+            System.out.println(warningString);
             return;
         }
-        list.forEach(s -> System.out.println(s.hashCode()));
+        list.forEach(s -> System.out.println(s != null ? s.hashCode() : "Элемент списка равен null."));
     }
 
     @FullNameProcessorGeneratorAnnotation
     public String generateProcessorFullName(List<String> list) {
         if (list == null) {
-            logger.warning("Список для генерации полного имени процессора равен null.");
-            return processorName;
+            String warningString = "Список для генерации полного имени процессора равен null.";
+            logger.warning(warningString);
+            return warningString;
         }
-        StringBuilder stringBuilder = new StringBuilder(processorName);
+        stringBuilder = new StringBuilder(processorName);
         list.forEach(s -> stringBuilder.append(s).append(" "));
         processorName = stringBuilder.toString().trim();
         return processorName;
@@ -56,9 +59,9 @@ public class LocalProcessor {
 
     @ReadFullProcessorNameAnnotation
     public void readFullProcessorName(File file) {
-        StringBuilder stringBuilder = new StringBuilder(processorVersion);
         try {
             informationScanner = new Scanner(file);
+            stringBuilder = new StringBuilder(processorVersion);
             while (informationScanner.hasNextLine()) {
                 stringBuilder.append(informationScanner.nextLine()).append("\n");
             }
