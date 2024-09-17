@@ -19,14 +19,16 @@ public class LocalProcessor {
     private String processorVersion;
     private int valueOfChip;
     private Scanner informationScanner;
+    private List<String> stringArrayList;
     private StringBuilder stringBuilder;
     private static final Logger logger = Logger.getLogger(LocalProcessor.class.getName());
 
-    public LocalProcessor(String processorName, long period, String processorVersion, int valueOfChip) {
+    public LocalProcessor(String processorName, long period, String processorVersion, int valueOfChip, List<String> stringArrayList) {
         this.processorName = processorName;
         this.period = period;
         this.processorVersion = processorVersion;
         this.valueOfChip = valueOfChip;
+        this.stringArrayList = stringArrayList;
     }
 
     public LocalProcessor() {
@@ -34,28 +36,26 @@ public class LocalProcessor {
 
     @ListIteratorAnnotation
     public void iterateList(List<String> list) {
-        try {
-            list.forEach(s -> System.out.println(s.hashCode()));
-        } catch (NullPointerException e) {
-            String warningString = "NullPointerException occurred while trying iterate over list";
-            logger.warning(": " + e.getMessage());
+        if (list == null) {
+            String warningString = "The iteration list is null.";
+            logger.warning(warningString);
             System.out.println(warningString);
+            return;
         }
+        list.forEach(s -> System.out.println(s != null ? s.hashCode() : "null"));
     }
 
     @FullNameProcessorGeneratorAnnotation
     public String generateProcessorFullName(List<String> list) {
-        try {
-            stringBuilder = new StringBuilder(processorName);
-            list.forEach(s -> stringBuilder.append(s).append(" "));
-            processorName = stringBuilder.toString().trim();
-            return processorName;
-        } catch (NullPointerException e) {
-            String warningString = "NullPointerException occurred while trying generate processor name from list";
-            logger.warning(": " + e.getMessage());
+        if (list == null) {
+            String warningString = "The list for generating the full processor name is null.";
+            logger.warning(warningString);
             return warningString;
         }
-
+        stringBuilder = new StringBuilder(processorName);
+        list.forEach(s -> stringBuilder.append(s != null ? s : "null").append(" "));
+        processorName = stringBuilder.toString().trim();
+        return processorName;
     }
 
     @ReadFullProcessorNameAnnotation
@@ -68,7 +68,7 @@ public class LocalProcessor {
             }
             processorVersion = stringBuilder.toString();
         } catch (FileNotFoundException e) {
-            logger.severe("Ошибка при чтении файла: " + file.getAbsolutePath() + " - " + e.getMessage());
+            logger.severe("Error reading file: " + file.getAbsolutePath() + " - " + e.getMessage());
         } finally {
             if (informationScanner != null) {
                 informationScanner.close();
