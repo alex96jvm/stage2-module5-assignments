@@ -2,7 +2,6 @@ package assignments;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Logger;
@@ -18,18 +17,16 @@ public class LocalProcessor {
     private String processorName;
     private Long period = 10_000_000_000_000L;
     protected String processorVersion;
-    private Integer valueOfCheap;
+    private Integer valueOfChip;
     private Scanner informationScanner;
-    private List<String> stringArrayList = new ArrayList<>();
     private StringBuilder stringBuilder;
     private static final Logger logger = Logger.getLogger(LocalProcessor.class.getName());
 
-    public LocalProcessor(String processorName, long period, String processorVersion, int valueOfCheap, List<String> stringArrayList) {
+    public LocalProcessor(String processorName, long period, String processorVersion, int valueOfChip) {
         this.processorName = processorName;
         this.period = period;
         this.processorVersion = processorVersion;
-        this.valueOfCheap = valueOfCheap;
-        this.stringArrayList = stringArrayList;
+        this.valueOfChip = valueOfChip;
     }
 
     public LocalProcessor() {
@@ -38,10 +35,11 @@ public class LocalProcessor {
     @ListIteratorAnnotation
     public void iterateList(List<String> stringList) {
         if (stringList == null) {
-            logger.warning("The iteration list is null.");
+            String warningString = "The iteration list is null.";
+            System.out.println(warningString);
+            logger.warning(warningString);
             return;
         }
-        stringArrayList = stringList;
         stringList.forEach(s -> System.out.println(s != null ? s.hashCode() : "null"));
     }
 
@@ -52,7 +50,7 @@ public class LocalProcessor {
             logger.warning(warningString);
             return warningString;
         }
-        stringBuilder = new StringBuilder(processorName);
+        stringBuilder = new StringBuilder();
         stringList.forEach(s -> stringBuilder.append(s != null ? s : "null").append(" "));
         processorName = stringBuilder.toString().trim();
         return processorName;
@@ -62,13 +60,13 @@ public class LocalProcessor {
     public void readFullProcessorName(File file) {
         try {
             informationScanner = new Scanner(file);
-            stringBuilder = new StringBuilder(processorVersion);
+            stringBuilder = new StringBuilder();
             while (informationScanner.hasNextLine()) {
                 stringBuilder.append(informationScanner.nextLine()).append("\n");
             }
             processorVersion = stringBuilder.toString();
         } catch (FileNotFoundException e) {
-            logger.severe("Error reading file: " + file.getAbsolutePath() + " - " + e.getMessage());
+            logger.warning(e.getMessage());
         } finally {
             if (informationScanner != null) {
                 informationScanner.close();
