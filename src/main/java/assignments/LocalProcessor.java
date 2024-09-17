@@ -19,6 +19,7 @@ public class LocalProcessor {
     private long period = 10_000_000_000_000L;
     private String processorVersion;
     private int valueOfChip;
+    private Scanner informationScanner;
     private static final Logger logger = Logger.getLogger(LocalProcessor.class.getName());
 
     public LocalProcessor(String processorName, long period, String processorVersion, int valueOfChip) {
@@ -33,27 +34,41 @@ public class LocalProcessor {
 
     @ListIteratorAnnotation
     public void iterateList(List<String> list) {
+        if (list == null) {
+            logger.warning("Список для итерации равен null.");
+            System.out.println("Список для итерации равен null.");
+            return;
+        }
         list.forEach(s -> System.out.println(s.hashCode()));
     }
 
     @FullNameProcessorGeneratorAnnotation
     public String generateProcessorFullName(List<String> list) {
+        if (list == null) {
+            logger.warning("Список для генерации полного имени процессора равен null.");
+            return processorName;
+        }
         StringBuilder stringBuilder = new StringBuilder(processorName);
         list.forEach(s -> stringBuilder.append(s).append(" "));
-        processorName = stringBuilder.toString();
+        processorName = stringBuilder.toString().trim();
         return processorName;
     }
 
     @ReadFullProcessorNameAnnotation
     public void readFullProcessorName(File file) {
         StringBuilder stringBuilder = new StringBuilder(processorVersion);
-        try (Scanner scanner = new Scanner(file)) {
-            while (scanner.hasNextLine()) {
-                stringBuilder.append(scanner.nextLine()).append("\n");
+        try {
+            informationScanner = new Scanner(file);
+            while (informationScanner.hasNextLine()) {
+                stringBuilder.append(informationScanner.nextLine()).append("\n");
             }
+            processorVersion = stringBuilder.toString();
         } catch (FileNotFoundException e) {
             logger.severe("Ошибка при чтении файла: " + file.getAbsolutePath() + " - " + e.getMessage());
+        } finally {
+            if (informationScanner != null) {
+                informationScanner.close();
+            }
         }
-        processorVersion = stringBuilder.toString();
     }
 }
