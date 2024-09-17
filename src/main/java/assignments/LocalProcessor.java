@@ -2,6 +2,7 @@ package assignments;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Logger;
@@ -15,18 +16,20 @@ import lombok.Setter;
 @Setter
 public class LocalProcessor {
     private String processorName;
-    private long period = 10_000_000_000_000L;
+    private Long period = 10_000_000_000_000L;
     protected String processorVersion;
-    private int valueOfChip;
+    private Integer valueOfCheap;
     private Scanner informationScanner;
+    private List<String> stringArrayList = new ArrayList<>();
     private StringBuilder stringBuilder;
     private static final Logger logger = Logger.getLogger(LocalProcessor.class.getName());
 
-    public LocalProcessor(String processorName, long period, String processorVersion, int valueOfChip) {
+    public LocalProcessor(String processorName, long period, String processorVersion, int valueOfCheap, List<String> stringArrayList) {
         this.processorName = processorName;
         this.period = period;
         this.processorVersion = processorVersion;
-        this.valueOfChip = valueOfChip;
+        this.valueOfCheap = valueOfCheap;
+        this.stringArrayList = stringArrayList;
     }
 
     public LocalProcessor() {
@@ -38,6 +41,7 @@ public class LocalProcessor {
             logger.warning("The iteration list is null.");
             return;
         }
+        stringArrayList = stringList;
         stringList.forEach(s -> System.out.println(s != null ? s.hashCode() : "null"));
     }
 
