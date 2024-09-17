@@ -16,7 +16,7 @@ import lombok.Setter;
 public class LocalProcessor {
     private String processorName;
     private long period = 10_000_000_000_000L;
-    private String processorVersion;
+    protected String processorVersion;
     private int valueOfChip;
     private Scanner informationScanner;
     private StringBuilder stringBuilder;
@@ -33,25 +33,23 @@ public class LocalProcessor {
     }
 
     @ListIteratorAnnotation
-    public void iterateList(List<String> list) {
-        if (list == null) {
-            String warningString = "The iteration list is null.";
-            logger.warning(warningString);
-            System.out.println(warningString);
+    public void iterateList(List<String> stringList) {
+        if (stringList == null) {
+            logger.warning("The iteration list is null.");
             return;
         }
-        list.forEach(s -> System.out.println(s != null ? s.hashCode() : "null"));
+        stringList.forEach(s -> System.out.println(s != null ? s.hashCode() : "null"));
     }
 
     @FullNameProcessorGeneratorAnnotation
-    public String generateProcessorFullName(List<String> list) {
-        if (list == null) {
+    public String generateProcessorFullName(List<String> stringList) {
+        if (stringList == null) {
             String warningString = "The list for generating the full processor name is null.";
             logger.warning(warningString);
             return warningString;
         }
         stringBuilder = new StringBuilder(processorName);
-        list.forEach(s -> stringBuilder.append(s != null ? s : "null").append(" "));
+        stringList.forEach(s -> stringBuilder.append(s != null ? s : "null").append(" "));
         processorName = stringBuilder.toString().trim();
         return processorName;
     }
@@ -67,7 +65,6 @@ public class LocalProcessor {
             processorVersion = stringBuilder.toString();
         } catch (FileNotFoundException e) {
             logger.severe("Error reading file: " + file.getAbsolutePath() + " - " + e.getMessage());
-            throw new RuntimeException(e);
         } finally {
             if (informationScanner != null) {
                 informationScanner.close();
