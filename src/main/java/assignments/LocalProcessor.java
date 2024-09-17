@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Logger;
-
 import assignments.annotations.FullNameProcessorGeneratorAnnotation;
 import assignments.annotations.ListIteratorAnnotation;
 import assignments.annotations.ReadFullProcessorNameAnnotation;
@@ -35,26 +34,28 @@ public class LocalProcessor {
 
     @ListIteratorAnnotation
     public void iterateList(List<String> list) {
-        if (list == null) {
-            String warningString = "Список для итерации равен null.";
-            logger.warning(warningString);
+        try {
+            list.forEach(s -> System.out.println(s.hashCode()));
+        } catch (NullPointerException e) {
+            String warningString = "NullPointerException occurred while trying iterate over list";
+            logger.warning(": " + e.getMessage());
             System.out.println(warningString);
-            return;
         }
-        list.forEach(s -> System.out.println(s != null ? s.hashCode() : "Элемент списка равен null."));
     }
 
     @FullNameProcessorGeneratorAnnotation
     public String generateProcessorFullName(List<String> list) {
-        if (list == null) {
-            String warningString = "Список для генерации полного имени процессора равен null.";
-            logger.warning(warningString);
+        try {
+            stringBuilder = new StringBuilder(processorName);
+            list.forEach(s -> stringBuilder.append(s).append(" "));
+            processorName = stringBuilder.toString().trim();
+            return processorName;
+        } catch (NullPointerException e) {
+            String warningString = "NullPointerException occurred while trying generate processor name from list";
+            logger.warning(": " + e.getMessage());
             return warningString;
         }
-        stringBuilder = new StringBuilder(processorName);
-        list.forEach(s -> stringBuilder.append(s).append(" "));
-        processorName = stringBuilder.toString().trim();
-        return processorName;
+
     }
 
     @ReadFullProcessorNameAnnotation
