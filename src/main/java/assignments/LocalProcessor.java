@@ -19,16 +19,14 @@ public class LocalProcessor {
     private String processorVersion;
     private int valueOfChip;
     private Scanner informationScanner;
-    private List<String> stringArrayList;
     private StringBuilder stringBuilder;
     private static final Logger logger = Logger.getLogger(LocalProcessor.class.getName());
 
-    public LocalProcessor(String processorName, long period, String processorVersion, int valueOfChip, List<String> stringArrayList) {
+    public LocalProcessor(String processorName, long period, String processorVersion, int valueOfChip) {
         this.processorName = processorName;
         this.period = period;
         this.processorVersion = processorVersion;
         this.valueOfChip = valueOfChip;
-        this.stringArrayList = stringArrayList;
     }
 
     public LocalProcessor() {
@@ -69,6 +67,7 @@ public class LocalProcessor {
             processorVersion = stringBuilder.toString();
         } catch (FileNotFoundException e) {
             logger.severe("Error reading file: " + file.getAbsolutePath() + " - " + e.getMessage());
+            throw new RuntimeException(e);
         } finally {
             if (informationScanner != null) {
                 informationScanner.close();
